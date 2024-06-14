@@ -24063,7 +24063,8 @@ this.c=c},
 a3m:function a3m(a,b){this.a=a
 this.b=b},
 a3h:function a3h(a){this.a=a},
-a3i:function a3i(a){this.a=a},
+a3i:function a3i(a,b){this.a=a
+this.b=b},
 a3j:function a3j(a){this.a=a},
 a3g:function a3g(a,b){this.a=a
 this.b=b},
@@ -79385,15 +79386,13 @@ $S:475}
 A.IF.prototype={
 L(a){return A.anX(new A.a3k(this),t.T4)}}
 A.a3k.prototype={
-$3(a,b,c){var s,r,q,p,o=null,n=this.a,m=new A.a3l(n,b,a),l=t.F,k=A.JN(A.a([A.bG("\ucc38\uc11d \uc778\uc6d0",o,o,o,o,A.cU(o,o,o,o,o,o,o,o,o,o,o,24,o,o,B.aF,o,o,!0,o,o,o,o,o,o,o,o),o,o),A.JN(A.a([A.bG("\uc804\uccb4 \ucd08\uae30\ud654",o,o,o,o,A.cU(o,o,o,o,o,o,o,o,o,o,o,15,o,o,o,o,o,!0,o,o,o,o,o,o,o,o),o,o),A.w1(o,A.nu(B.Cj,o,o,o),new A.a3m(n,b),o,o)],l),B.bo,B.bL,B.bs)],l),B.bo,B.rz,B.bs),j=A.dT(o,10,o)
-n=A.als(n.c,A.a0P(o,new A.hH(4,B.eB,B.kM),o,o,o,o,o,o,!0,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,"\uc774\ub984",o,o,o,o,o,o,o,o,o,o,o,o,o),o,new A.a3h(m),B.jZ)
-s=A.dT(o,10,o)
-m=A.aks(A.bG("\ucd94\uac00",o,o,o,o,o,o,o),new A.a3i(m))
-r=A.dT(o,20,o)
-q=b.a.length
-p=!0
-p=p?B.yk:o
-return new A.bA(B.is,A.pK(A.a([k,j,n,s,m,r,A.akv(new A.Hn(new A.Kn(new A.a3j(b),q,!0,!0,!0,o),o,B.aR,!1,o,o,p,!1,o,q,B.ae,B.Iu,o,B.a6,o))],l),B.bo,B.bL,B.bs),o)},
+$3(a,b,c){var s,r,q=null,p=this.a,o=new A.a3l(p,b,a),n=t.F,m=A.JN(A.a([A.bG("\ucc38\uc11d \uc778\uc6d0",q,q,q,q,A.cU(q,q,q,q,q,q,q,q,q,q,q,24,q,q,B.aF,q,q,!0,q,q,q,q,q,q,q,q),q,q),A.JN(A.a([A.bG("\uc804\uccb4 \ucd08\uae30\ud654",q,q,q,q,A.cU(q,q,q,q,q,q,q,q,q,q,q,15,q,q,q,q,q,!0,q,q,q,q,q,q,q,q),q,q),A.w1(q,A.nu(B.Cj,q,q,q),new A.a3m(p,b),q,q)],n),B.bo,B.bL,B.bs)],n),B.bo,B.rz,B.bs),l=A.dT(q,10,q),k=A.als(p.c,A.a0P(q,new A.hH(4,B.eB,B.kM),q,q,q,q,q,q,!0,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,"\uc774\ub984",q,q,q,q,q,q,q,q,q,q,q,q,q),q,new A.a3h(o),B.jZ),j=A.dT(q,10,q)
+o=A.aks(A.bG("\ucd94\uac00",q,q,q,q,q,q,q),new A.a3i(p,o))
+p=A.dT(q,20,q)
+s=b.a.length
+r=!0
+r=r?B.yk:q
+return new A.bA(B.is,A.pK(A.a([m,l,k,j,o,p,A.akv(new A.Hn(new A.Kn(new A.a3j(b),s,!0,!0,!0,q),q,B.aR,!1,q,q,r,!1,q,s,B.ae,B.Iu,q,B.a6,q))],n),B.bo,B.bL,B.bs),q)},
 $C:"$3",
 $R:3,
 $S:476}
@@ -79404,7 +79403,7 @@ r=s.a
 r.push(p)
 s.ao()
 A.fK("addAttendee: "+p+", \ud604\uc7ac \ucc38\uc11d\uc790 \ubaa9\ub85d: "+A.j(r))
-A.fK("\ucc38\uc11d\uc790 \ucd94\uac00: "+q.a.a)
+A.fK("\ucc38\uc11d\uc790 \ucd94\uac00: "+p)
 q.kR(0,B.hh)
 A.a_a(this.c).hr()}else A.fK("\ucc38\uc11d\uc790 \uc774\ub984\uc774 \ube44\uc5b4\uc788\uc74c")},
 $S:0}
@@ -79422,8 +79421,8 @@ $1(a){this.a.$0()
 A.fK("\uc5d4\ud130 \uc785\ub825: "+a)},
 $S:56}
 A.a3i.prototype={
-$0(){A.fK("\ucd94\uac00 \ubc84\ud2bc \ud074\ub9ad")
-this.a.$0()},
+$0(){A.fK("\ucd94\uac00 \ubc84\ud2bc \ud074\ub9ad, \ud604\uc7ac \uc785\ub825\ub41c \uc774\ub984: "+this.a.c.a.a)
+this.b.$0()},
 $S:0}
 A.a3j.prototype={
 $2(a,b){var s=null,r=this.a,q=r.a[b]
