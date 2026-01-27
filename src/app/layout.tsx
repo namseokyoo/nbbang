@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   description: "모임이나 회식 후 복잡한 정산을 간편하게! 여러 차수에 걸친 비용을 개인별로 정확하게 계산하고, 최적화된 송금 방법을 제시합니다.",
   keywords: ["정산", "엔빵", "더치페이", "회식", "모임", "비용 분배", "정산 계산기"],
   authors: [{ name: "SidequestLab" }],
+  verification: {
+    other: {
+      "naver-site-verification": "38ea8ad6fdc73f8b7eeaa6d1d04500d3dd2ba36b",
+    },
+  },
   openGraph: {
     title: "엔빵 계산기 | N-ppang Calculator",
     description: "모임이나 회식 후 복잡한 정산을 간편하게!",
