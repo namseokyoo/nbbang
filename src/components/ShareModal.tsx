@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { trackShareLinkCopy, trackShareWeb } from '@/lib/analytics';
+import { trackShareLinkCopy, trackShareWeb, trackShareKakao } from '@/lib/analytics';
+import { isKakaoAvailable, shareSettlementToKakao } from '@/lib/kakao';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -12,11 +13,15 @@ interface ShareModalProps {
 export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [supportsWebShare, setSupportsWebShare] = useState(false);
+  const [supportsKakao, setSupportsKakao] = useState(false);
+  const [isKakaoSharing, setIsKakaoSharing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // Web Share API 지원 여부 체크
     setSupportsWebShare(typeof navigator !== 'undefined' && !!navigator.share);
+    // 카카오 SDK 사용 가능 여부 체크
+    setSupportsKakao(isKakaoAvailable());
   }, []);
 
   useEffect(() => {
@@ -80,6 +85,28 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
       if ((error as Error).name !== 'AbortError') {
         console.error('공유 실패:', error);
       }
+    }
+  };
+
+  const handleKakaoShare = async () => {
+    setIsKakaoSharing(true);
+    try {
+      const success = await shareSettlementToKakao(shareUrl);
+      if (success) {
+        trackShareKakao();
+      } else {
+        // 카카오 SDK가 없거나 초기화 실패 시 Web Share API 폴백
+        if (supportsWebShare) {
+          await handleWebShare();
+        } else {
+          alert('카카오톡 공유를 사용할 수 없습니다. 링크를 복사하여 공유해주세요.');
+        }
+      }
+    } catch (error) {
+      console.error('카카오톡 공유 실패:', error);
+      alert('카카오톡 공유 중 오류가 발생했습니다. 링크를 복사하여 공유해주세요.');
+    } finally {
+      setIsKakaoSharing(false);
     }
   };
 
@@ -184,23 +211,62 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
             </button>
           </div>
 
-          {/* Web Share API 버튼 (지원하는 경우만 표시) */}
-          {supportsWebShare && (
+          {/* 공유 버튼 영역 */}
+          <div className="space-y-2">
+            {/* 카카오톡 공유 버튼 (항상 표시 - SDK 없으면 Web Share API 폴백) */}
             <button
-              onClick={handleWebShare}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+              onClick={handleKakaoShare}
+              disabled={isKakaoSharing}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#FEE500] hover:bg-[#FDD800] text-[#3C1E1E] rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
             >
+              {/* 카카오톡 아이콘 */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
-                viewBox="0 0 20 20"
+                viewBox="0 0 24 24"
                 fill="currentColor"
               >
-                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                <path d="M12 3C6.477 3 2 6.463 2 10.691c0 2.787 1.857 5.225 4.64 6.561-.146.528-.941 3.409-.97 3.628 0 0-.019.163.086.226.105.063.229.028.229.028.303-.042 3.508-2.292 4.063-2.685.621.091 1.266.139 1.952.139 5.523 0 10-3.463 10-7.897C22 6.463 17.523 3 12 3z" />
               </svg>
-              다른 앱으로 공유하기
+              {isKakaoSharing ? '공유 중...' : '카카오톡으로 공유하기'}
             </button>
-          )}
+
+            {/* Web Share API 버튼 (지원하는 경우만 표시, 카카오톡 SDK가 없을 때 대체 옵션) */}
+            {supportsWebShare && !supportsKakao && (
+              <button
+                onClick={handleWebShare}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                </svg>
+                다른 앱으로 공유하기
+              </button>
+            )}
+
+            {/* 카카오톡 SDK가 있고 Web Share도 지원하면 둘 다 표시 */}
+            {supportsWebShare && supportsKakao && (
+              <button
+                onClick={handleWebShare}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                </svg>
+                다른 앱으로 공유하기
+              </button>
+            )}
+          </div>
         </div>
 
         {/* 푸터 */}

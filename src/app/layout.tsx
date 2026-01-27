@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import "./globals.css";
 
 const GA_ID = "G-RN7CLNR7KZ";
+const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_APP_KEY || "";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -106,6 +108,21 @@ export default function RootLayout({
       >
         {children}
         <GoogleAnalytics gaId={GA_ID} />
+        {/* 카카오 SDK - 앱 키가 설정된 경우에만 로드 */}
+        {KAKAO_APP_KEY && (
+          <Script
+            src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+            integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+            crossOrigin="anonymous"
+            strategy="lazyOnload"
+            onLoad={() => {
+              if (typeof window !== "undefined" && window.Kakao && !window.Kakao.isInitialized()) {
+                window.Kakao.init(KAKAO_APP_KEY);
+                console.log("[Kakao] SDK 초기화 완료");
+              }
+            }}
+          />
+        )}
       </body>
     </html>
   );
