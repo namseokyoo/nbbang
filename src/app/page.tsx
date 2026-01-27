@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useStore } from '@/lib/store';
 import Carousel from '@/components/Carousel';
 import ShareModal from '@/components/ShareModal';
+import KakaoAdFit from '@/components/KakaoAdFit';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -103,6 +104,15 @@ export default function Home() {
       <main className="flex-1 overflow-hidden">
         <Carousel />
       </main>
+
+      {/* 광고 영역 */}
+      <div className="bg-gray-50 border-t py-3">
+        <KakaoAdFit
+          adUnitId="DAN-xseoxvs2BUvUoit4"
+          width={320}
+          height={100}
+        />
+      </div>
 
       {/* 푸터 */}
       <footer className="bg-white border-t py-2 text-center text-xs text-gray-400">
