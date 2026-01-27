@@ -1,33 +1,30 @@
-import type { MetadataRoute } from 'next'
+import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://nbbang.click'
-  const lastModified = new Date()
-
   return [
     {
-      url: baseUrl,
-      lastModified,
+      url: 'https://nbbang.click',
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
-      lastModified,
+      url: 'https://nbbang.click/about',
+      lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/guide`,
-      lastModified,
+      url: 'https://nbbang.click/guide',
+      lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/privacy`,
-      lastModified,
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      url: 'https://nbbang.click/privacy',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
-  ]
+  ];
 }

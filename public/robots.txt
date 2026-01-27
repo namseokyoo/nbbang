@@ -1,7 +1,4 @@
-# robots.txt for nbbang.click
-
 User-agent: *
 Allow: /
 
-# Sitemap location
 Sitemap: https://nbbang.click/sitemap.xml
