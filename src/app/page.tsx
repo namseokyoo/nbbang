@@ -1,65 +1,139 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useStore } from '@/lib/store';
+import Carousel from '@/components/Carousel';
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false);
+  const { importState, exportState, clearAll, participants, rounds } = useStore();
+
+  useEffect(() => {
+    // Client-side initialization - required for hydration safety
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsClient(true);
+
+    // URL 파라미터에서 상태 가져오기
+    const params = new URLSearchParams(window.location.search);
+    const data = params.get('data');
+    if (data) {
+      const success = importState(data);
+      if (success) {
+        // URL 정리 (히스토리 교체)
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, [importState]);
+
+  const handleShare = async () => {
+    const data = exportState();
+    const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: '엔빵 계산기 - 정산 공유',
+          text: '정산 내역을 확인해주세요!',
+          url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('링크가 클립보드에 복사되었습니다!');
+      }
+    } catch (error) {
+      console.error('공유 실패:', error);
+      // 폴백: 클립보드 복사
+      try {
+        await navigator.clipboard.writeText(url);
+        alert('링크가 클립보드에 복사되었습니다!');
+      } catch {
+        alert('공유 링크를 생성하지 못했습니다.');
+      }
+    }
+  };
+
+  const handleClearAll = () => {
+    if (confirm('모든 데이터를 삭제하시겠습니까?')) {
+      clearAll();
+    }
+  };
+
+  const hasData = participants.length > 0 || rounds.length > 0;
+
+  // 서버 사이드 렌더링 방지 (hydration 이슈)
+  if (!isClient) {
+    return (
+      <div className="min-h-dvh flex items-center justify-center">
+        <div className="text-gray-400">로딩 중...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-dvh flex flex-col">
+      {/* 헤더 */}
+      <header className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+        <h1 className="text-lg font-bold text-blue-600">엔빵 계산기</h1>
+        <div className="flex items-center gap-2">
+          {hasData && (
+            <>
+              <button
+                onClick={handleShare}
+                className="btn btn-secondary text-sm py-1.5 px-3"
+                title="공유하기"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                </svg>
+                공유
+              </button>
+              <button
+                onClick={handleClearAll}
+                className="btn btn-danger text-sm py-1.5 px-3"
+                title="초기화"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                초기화
+              </button>
+            </>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </header>
+
+      {/* 메인 콘텐츠 */}
+      <main className="flex-1 overflow-hidden">
+        <Carousel />
       </main>
+
+      {/* 푸터 */}
+      <footer className="bg-white border-t py-2 text-center text-xs text-gray-400">
+        <a
+          href="https://sidequestlab.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-blue-500"
+        >
+          SidequestLab
+        </a>
+        {' | '}
+        <a href="/privacy" className="hover:text-blue-500">개인정보처리방침</a>
+      </footer>
     </div>
   );
 }
