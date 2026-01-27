@@ -3,9 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '@/lib/store';
 import Carousel from '@/components/Carousel';
+import ShareModal from '@/components/ShareModal';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState('');
   const { importState, exportState, clearAll, participants, rounds } = useStore();
 
   useEffect(() => {
@@ -25,31 +28,11 @@ export default function Home() {
     }
   }, [importState]);
 
-  const handleShare = async () => {
+  const handleShare = () => {
     const data = exportState();
     const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: '엔빵 계산기 - 정산 공유',
-          text: '정산 내역을 확인해주세요!',
-          url,
-        });
-      } else {
-        await navigator.clipboard.writeText(url);
-        alert('링크가 클립보드에 복사되었습니다!');
-      }
-    } catch (error) {
-      console.error('공유 실패:', error);
-      // 폴백: 클립보드 복사
-      try {
-        await navigator.clipboard.writeText(url);
-        alert('링크가 클립보드에 복사되었습니다!');
-      } catch {
-        alert('공유 링크를 생성하지 못했습니다.');
-      }
-    }
+    setShareUrl(url);
+    setIsShareModalOpen(true);
   };
 
   const handleClearAll = () => {
@@ -134,6 +117,13 @@ export default function Home() {
         {' | '}
         <a href="/privacy" className="hover:text-blue-500">개인정보처리방침</a>
       </footer>
+
+      {/* 공유 모달 */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        shareUrl={shareUrl}
+      />
     </div>
   );
 }
