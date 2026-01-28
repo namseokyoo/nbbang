@@ -54,10 +54,25 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-3 text-gray-900">3. 광고 서비스 (예정)</h2>
+            <h2 className="text-lg font-semibold mb-3 text-gray-900">3. 광고 서비스</h2>
             <p className="leading-relaxed">
-              향후 서비스 운영을 위해 광고 서비스가 도입될 수 있습니다.
-              광고 서비스 도입 시 본 개인정보처리방침을 업데이트하여 안내드리겠습니다.
+              서비스 운영을 위해 <strong>카카오 애드핏(Kakao AdFit)</strong> 광고 서비스를 사용합니다.
+            </p>
+            <ul className="mt-3 space-y-2 list-disc list-inside text-gray-600">
+              <li>카카오 애드핏은 사용자 관심사 기반 광고를 제공하기 위해 쿠키를 사용할 수 있습니다</li>
+              <li>광고 관련 데이터 처리는 카카오 개인정보처리방침을 따릅니다</li>
+              <li>광고 개인화를 원하지 않으시면 브라우저 쿠키 설정에서 관리하실 수 있습니다</li>
+            </ul>
+            <p className="mt-3 leading-relaxed text-sm text-gray-500">
+              카카오 개인정보처리방침:{' '}
+              <a
+                href="https://www.kakao.com/policy/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                https://www.kakao.com/policy/privacy
+              </a>
             </p>
           </section>
 
@@ -92,9 +107,10 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-lg font-semibold mb-3 text-gray-900">7. 개정 이력</h2>
-            <p className="leading-relaxed">
-              본 개인정보처리방침은 2025년 1월 27일에 제정되었습니다.
-            </p>
+            <ul className="space-y-1 text-gray-600">
+              <li><strong>2025년 1월 28일:</strong> 카카오 애드핏 광고 서비스 관련 내용 추가</li>
+              <li><strong>2025년 1월 27일:</strong> 최초 제정</li>
+            </ul>
           </section>
         </div>
       </main>

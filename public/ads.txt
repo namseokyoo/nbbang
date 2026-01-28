@@ -1,0 +1,1 @@
+kakao.com, pub-YOUR_SITE_ID, DIRECT
