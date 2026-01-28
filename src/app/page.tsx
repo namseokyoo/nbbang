@@ -108,7 +108,7 @@ export default function Home() {
       {/* 광고 영역 */}
       <div className="bg-gray-50 border-t py-3">
         <KakaoAdFit
-          adUnitId="DAN-xseoxvs2BUvUoit4"
+          adUnitId="DAN-tGpG7VditprGww0q"
           width={320}
           height={100}
         />
