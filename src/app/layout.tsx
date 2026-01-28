@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   keywords: ["정산", "엔빵", "더치페이", "회식", "모임", "비용 분배", "정산 계산기"],
   authors: [{ name: "SidequestLab" }],
   verification: {
+    google: "zPFH0eEEBBLfWs1eEl2B-UL5gB2Imc9iEW2B4vMd4U8",
     other: {
       "naver-site-verification": "38ea8ad6fdc73f8b7eeaa6d1d04500d3dd2ba36b",
     },
