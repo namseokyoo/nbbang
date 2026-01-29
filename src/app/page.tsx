@@ -5,12 +5,13 @@ import { useStore } from '@/lib/store';
 import Carousel from '@/components/Carousel';
 import ShareModal from '@/components/ShareModal';
 import KakaoAdFit from '@/components/KakaoAdFit';
+import ActionBar from '@/components/ActionBar';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
-  const { importState, exportState, clearAll, participants, rounds } = useStore();
+  const { importState, exportState, clearAll, participants, rounds, addRound } = useStore();
 
   useEffect(() => {
     // Client-side initialization - required for hydration safety
@@ -43,6 +44,11 @@ export default function Home() {
   };
 
   const hasData = participants.length > 0 || rounds.length > 0;
+
+  const handleAddRound = () => {
+    addRound();
+    // 캐러셀 이동은 Carousel 내부에서 처리
+  };
 
   // 서버 사이드 렌더링 방지 (hydration 이슈)
   if (!isClient) {
@@ -104,6 +110,12 @@ export default function Home() {
       <main className="flex-1 overflow-hidden">
         <Carousel />
       </main>
+
+      {/* Action Bar - 차수 추가 버튼 */}
+      <ActionBar
+        onAddRound={handleAddRound}
+        showButton={participants.length > 0}
+      />
 
       {/* 광고 영역 */}
       <div className="bg-gray-50 border-t py-3">

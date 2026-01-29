@@ -8,7 +8,8 @@ import RoundCard from './RoundCard';
 import SettlementCard from './SettlementCard';
 
 export default function Carousel() {
-  const { rounds, addRound, participants } = useStore();
+  const { rounds, participants } = useStore();
+  const [prevRoundsLength, setPrevRoundsLength] = useState(rounds.length);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
     containScroll: 'trimSnaps',
@@ -49,14 +50,19 @@ export default function Carousel() {
     };
   }, [emblaApi]);
 
-  // 라운드 추가 시 해당 슬라이드로 이동
-  const handleAddRound = () => {
-    addRound();
-    setTimeout(() => {
-      // 새로 추가된 라운드로 이동 (참가자 카드 다음)
-      scrollTo(rounds.length + 1);
-    }, 100);
-  };
+  // 라운드 추가 감지 시 해당 슬라이드로 이동
+  useEffect(() => {
+    if (rounds.length > prevRoundsLength && emblaApi) {
+      // 새 라운드가 추가됨 - 해당 슬라이드로 이동
+      setTimeout(() => {
+        // 새로 추가된 라운드로 이동 (참가자 카드 다음)
+        const newIndex = rounds.length; // 참가자(0) + 라운드들
+        emblaApi.scrollTo(newIndex);
+      }, 100);
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPrevRoundsLength(rounds.length);
+  }, [rounds.length, prevRoundsLength, emblaApi]);
 
   const getSlideLabel = (index: number) => {
     if (index === 0) return '참가자';
@@ -158,20 +164,6 @@ export default function Carousel() {
         ))}
       </div>
 
-      {/* 차수 추가 버튼 */}
-      {participants.length > 0 && (
-        <button
-          onClick={handleAddRound}
-          className="fixed bottom-20 right-4 md:bottom-24 md:right-8 btn btn-primary shadow-lg rounded-full w-14 h-14 flex items-center justify-center text-sm font-bold z-20"
-          title="차수 추가"
-        >
-          <span className="leading-tight text-center">
-            차수
-            <br />
-            추가
-          </span>
-        </button>
-      )}
-    </div>
+      </div>
   );
 }
