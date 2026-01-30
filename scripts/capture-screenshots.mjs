@@ -88,20 +88,19 @@ async function captureScreenshots() {
     }
     console.log(`   ✅ 참가자 ${SAMPLE_PARTICIPANTS.length}명 추가 완료`);
 
-    // 비용 항목 추가
+    // 비용 항목 추가 (차수 추가 → 비용 추가 순서)
     for (let i = 0; i < SAMPLE_EXPENSES.length; i++) {
       const expense = SAMPLE_EXPENSES[i];
 
-      // 첫 번째 차수가 이미 있으므로, 추가 차수는 2번째부터
-      if (i > 0) {
-        const addRoundBtn = await desktopPage.$('[data-testid="add-round-button"]');
-        if (addRoundBtn) {
-          await addRoundBtn.click();
-          await desktopPage.waitForTimeout(500);
-        }
+      // 매 차수마다 차수 추가 버튼 클릭 (엔빵 UI: 참가자 추가 → 차수 추가 → 비용 추가)
+      const addRoundBtn = await desktopPage.$('[data-testid="add-round-button"]');
+      if (addRoundBtn) {
+        await addRoundBtn.click();
+        await desktopPage.waitForTimeout(500);
+        console.log(`   ✅ ${i + 1}차 추가 완료`);
       }
 
-      // 비용 추가 버튼 클릭 (동적 id를 위해 부분 매칭 사용)
+      // 비용 추가 버튼 클릭 (해당 차수의 버튼)
       const addExpenseButtons = await desktopPage.$$('[data-testid^="add-expense-button-"]');
       const addExpenseBtn = addExpenseButtons[i];
       if (addExpenseBtn) {
