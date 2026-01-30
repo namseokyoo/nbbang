@@ -124,7 +124,7 @@ export default function RoundCard({ round }: RoundCardProps) {
     formData.paidBy;
 
   return (
-    <div className="card p-6 h-full flex flex-col animate-fadeIn">
+    <div data-testid={`round-card-${round.id}`} className="card p-6 h-full flex flex-col animate-fadeIn">
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">{round.name}</h2>
@@ -136,6 +136,7 @@ export default function RoundCard({ round }: RoundCardProps) {
             onClick={() => removeRound(round.id)}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"
             title="라운드 삭제"
+            data-testid={`remove-round-button-${round.id}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -160,10 +161,11 @@ export default function RoundCard({ round }: RoundCardProps) {
             <p>비용 항목을 추가해주세요</p>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul data-testid={`expense-list-${round.id}`} className="space-y-2">
             {round.items.map((item) => (
               <li
                 key={item.id}
+                data-testid={`expense-item-${item.id}`}
                 className={`p-3 rounded-lg ${
                   editingItemId === item.id
                     ? 'bg-blue-50 border border-blue-200'
@@ -206,6 +208,7 @@ export default function RoundCard({ round }: RoundCardProps) {
                         onClick={() => handleStartEditItem(item)}
                         className="text-gray-400 hover:text-blue-500 transition-colors p-1"
                         title="수정"
+                        data-testid={`edit-expense-button-${item.id}`}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -220,6 +223,7 @@ export default function RoundCard({ round }: RoundCardProps) {
                         onClick={() => removeItem(round.id, item.id)}
                         className="text-gray-400 hover:text-red-500 transition-colors p-1"
                         title="삭제"
+                        data-testid={`remove-expense-button-${item.id}`}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -244,7 +248,7 @@ export default function RoundCard({ round }: RoundCardProps) {
 
         {/* 새 항목 추가 폼 */}
         {isAddingItem && (
-          <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 mt-2">
+          <div data-testid="expense-form" className="p-3 rounded-lg bg-blue-50 border border-blue-200 mt-2">
             <ItemForm
               formData={formData}
               setFormData={setFormData}
@@ -265,6 +269,7 @@ export default function RoundCard({ round }: RoundCardProps) {
         <button
           onClick={handleStartAddItem}
           className="btn btn-primary w-full"
+          data-testid={`add-expense-button-${round.id}`}
         >
           + 항목 추가
         </button>
@@ -313,6 +318,7 @@ function ItemForm({
         placeholder="항목명 (예: 삼겹살)"
         className="w-full"
         maxLength={50}
+        data-testid="expense-name-input"
       />
 
       {/* 금액 */}
@@ -324,6 +330,7 @@ function ItemForm({
         className="w-full"
         min="0"
         step="100"
+        data-testid="expense-cost-input"
       />
 
       {/* 결제자 선택 */}
@@ -333,6 +340,7 @@ function ItemForm({
           value={formData.paidBy}
           onChange={(e) => setFormData((prev) => ({ ...prev, paidBy: e.target.value }))}
           className="w-full p-2 border border-gray-200 rounded-lg"
+          data-testid="expense-payer-select"
         >
           <option value="">선택해주세요</option>
           {participants.map((p) => (
@@ -388,6 +396,7 @@ function ItemForm({
           type="button"
           onClick={onCancel}
           className="btn btn-secondary flex-1"
+          data-testid="expense-cancel-button"
         >
           취소
         </button>
@@ -396,6 +405,7 @@ function ItemForm({
           onClick={onSave}
           disabled={!isValid}
           className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="expense-save-button"
         >
           저장
         </button>

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "screenshot": "node scripts/capture-screenshots.mjs",
+    "screenshot:prod": "node scripts/capture-screenshots.mjs https://nbbang.click"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.5",

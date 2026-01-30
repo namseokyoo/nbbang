@@ -28,7 +28,7 @@ export default function ParticipantsCard() {
   };
 
   return (
-    <div className="card p-6 h-full flex flex-col animate-fadeIn">
+    <div data-testid="participants-card" className="card p-6 h-full flex flex-col animate-fadeIn">
       <h2 className="text-xl font-bold mb-4 text-center">참가자</h2>
 
       {/* 참가자 입력 */}
@@ -41,11 +41,13 @@ export default function ParticipantsCard() {
           placeholder="이름을 입력하세요"
           className="flex-1"
           maxLength={20}
+          data-testid="participant-name-input"
         />
         <button
           onClick={handleAddParticipant}
           disabled={!newName.trim()}
           className="btn btn-primary px-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="add-participant-button"
         >
           추가
         </button>
@@ -59,10 +61,11 @@ export default function ParticipantsCard() {
             <p className="text-sm mt-2">첫 번째 참가자가 총무가 됩니다</p>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul data-testid="participant-list" className="space-y-2">
             {participants.map((participant) => (
               <li
                 key={participant.id}
+                data-testid={`participant-item-${participant.id}`}
                 className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
                   participant.isManager
                     ? 'bg-blue-50 border border-blue-200'
@@ -83,6 +86,7 @@ export default function ParticipantsCard() {
                       onClick={() => setManager(participant.id)}
                       className="text-sm text-blue-500 hover:text-blue-700 px-2 py-1"
                       title="총무로 지정"
+                      data-testid={`set-manager-button-${participant.id}`}
                     >
                       총무 지정
                     </button>
@@ -91,6 +95,7 @@ export default function ParticipantsCard() {
                     onClick={() => removeParticipant(participant.id)}
                     className="text-gray-400 hover:text-red-500 transition-colors p-1"
                     title="삭제"
+                    data-testid={`remove-participant-button-${participant.id}`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

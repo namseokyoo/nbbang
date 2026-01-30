@@ -62,7 +62,7 @@ export default function Home() {
   return (
     <div className="min-h-dvh flex flex-col">
       {/* 헤더 */}
-      <header className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <header data-testid="app-header" className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <h1 className="text-lg font-bold text-blue-600">엔빵 계산기</h1>
         <div className="flex items-center gap-2">
           {hasData && (
@@ -71,6 +71,7 @@ export default function Home() {
                 onClick={handleShare}
                 className="btn btn-secondary text-sm py-1.5 px-3"
                 title="공유하기"
+                data-testid="share-button"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -86,6 +87,7 @@ export default function Home() {
                 onClick={handleClearAll}
                 className="btn btn-danger text-sm py-1.5 px-3"
                 title="초기화"
+                data-testid="clear-all-button"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

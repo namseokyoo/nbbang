@@ -33,7 +33,7 @@ export default function SettlementCard() {
 
   if (!hasData) {
     return (
-      <div className="card p-6 h-full flex flex-col animate-fadeIn">
+      <div data-testid="settlement-card" className="card p-6 h-full flex flex-col animate-fadeIn">
         <h2 className="text-xl font-bold mb-4 text-center">정산 결과</h2>
         <div className="flex-1 flex items-center justify-center text-gray-400">
           <div className="text-center">
@@ -46,12 +46,12 @@ export default function SettlementCard() {
   }
 
   return (
-    <div className="card p-6 h-full flex flex-col animate-fadeIn">
+    <div data-testid="settlement-card" className="card p-6 h-full flex flex-col animate-fadeIn">
       <h2 className="text-xl font-bold mb-4 text-center">정산 결과</h2>
 
       <div className="flex-1 overflow-y-auto space-y-6">
         {/* 라운드별 정산 테이블 */}
-        <section>
+        <section data-testid="round-breakdown-section">
           <h3 className="font-semibold text-gray-700 mb-3">라운드별 부담금</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -101,7 +101,7 @@ export default function SettlementCard() {
         </section>
 
         {/* 개인별 결제 내역 */}
-        <section>
+        <section data-testid="payment-summary-section">
           <h3 className="font-semibold text-gray-700 mb-3">개인별 결제 내역</h3>
           <div className="space-y-2">
             {participants
@@ -128,7 +128,7 @@ export default function SettlementCard() {
         </section>
 
         {/* 개인별 정산 요약 */}
-        <section>
+        <section data-testid="individual-settlement-section">
           <h3 className="font-semibold text-gray-700 mb-3">개인별 정산</h3>
           <div className="space-y-2">
             {participants.map((p) => {
@@ -170,7 +170,7 @@ export default function SettlementCard() {
         </section>
 
         {/* 송금 안내 */}
-        <section>
+        <section data-testid="transfer-guide-section">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-gray-700">송금 안내</h3>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -216,10 +216,10 @@ export default function SettlementCard() {
         </section>
 
         {/* 총 금액 요약 */}
-        <section className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+        <section data-testid="total-amount-section" className="bg-blue-50 p-4 rounded-lg border border-blue-100">
           <div className="text-center">
             <span className="text-gray-600">총 사용 금액</span>
-            <div className="text-2xl font-bold text-blue-600 mt-1">
+            <div data-testid="total-amount" className="text-2xl font-bold text-blue-600 mt-1">
               {formatCurrency(settlementDetails.totalSpentOverall)}
             </div>
           </div>

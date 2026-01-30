@@ -11,10 +11,11 @@ export default function ActionBar({ onAddRound, showButton }: ActionBarProps) {
   }
 
   return (
-    <div className="bg-white border-t px-4 py-3 flex justify-center sm:px-6 lg:px-8 lg:py-4 lg:max-w-4xl lg:mx-auto">
+    <div data-testid="action-bar" className="bg-white border-t px-4 py-3 flex justify-center sm:px-6 lg:px-8 lg:py-4 lg:max-w-4xl lg:mx-auto">
       <button
         onClick={onAddRound}
         className="btn btn-primary rounded-full shadow-md flex items-center gap-2 font-semibold px-6 py-2.5 text-sm sm:px-8 sm:py-3 sm:text-base lg:px-10 lg:py-3.5"
+        data-testid="add-round-button"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

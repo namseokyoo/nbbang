@@ -71,9 +71,9 @@ export default function Carousel() {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div data-testid="carousel-container" className="h-full flex flex-col">
       {/* 캐러셀 영역 */}
-      <div className="flex-1 relative overflow-hidden" ref={emblaRef}>
+      <div data-testid="carousel-viewport" className="flex-1 relative overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
           {/* 참가자 카드 */}
           <div className="flex-shrink-0 w-full md:w-[90%] lg:w-[70%] px-2 md:px-4">
@@ -108,6 +108,7 @@ export default function Carousel() {
             onClick={scrollPrev}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800/40 hover:bg-gray-800/60 text-white p-2 md:p-3 rounded-r-lg transition-colors z-10"
             aria-label="이전"
+            data-testid="carousel-prev-button"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -132,6 +133,7 @@ export default function Carousel() {
             onClick={scrollNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-800/40 hover:bg-gray-800/60 text-white p-2 md:p-3 rounded-l-lg transition-colors z-10"
             aria-label="다음"
+            data-testid="carousel-next-button"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +154,7 @@ export default function Carousel() {
       </div>
 
       {/* 하단 인디케이터 */}
-      <div className="py-4 flex items-center justify-center gap-2">
+      <div data-testid="carousel-indicators" className="py-4 flex items-center justify-center gap-2">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
@@ -160,6 +162,7 @@ export default function Carousel() {
             className={`carousel-dot ${selectedIndex === index ? 'active' : ''}`}
             aria-label={getSlideLabel(index)}
             title={getSlideLabel(index)}
+            data-testid={`carousel-dot-${index}`}
           />
         ))}
       </div>
