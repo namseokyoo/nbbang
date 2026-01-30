@@ -5,11 +5,12 @@
  * 사용법:
  *   pnpm screenshot              # 로컬 서버 (http://localhost:3000)
  *   pnpm screenshot:prod         # 프로덕션 서버 (https://nbbang.click)
+ *   pnpm screenshot:blog         # 블로그 이미지 폴더에 직접 저장 (모바일 사이즈)
  *
  * 결과물:
- *   - screenshots/nbbang-main.png      (메인 화면, 1280x720)
- *   - screenshots/nbbang-result.png    (정산 결과 화면, 1280x720)
- *   - screenshots/nbbang-mobile.png    (모바일 뷰, 375x667)
+ *   - nbbang-main.png      (메인 화면, 375x667 모바일)
+ *   - nbbang-result.png    (정산 결과 화면, 375x667 모바일)
+ *   - nbbang-mobile.png    (모바일 뷰, 375x667)
  *
  * Board Advisor 권고: "Start Small, Evolve" - 복잡한 JSON 엔진 없이 하드코딩된 스크립트로 시작
  */
@@ -20,7 +21,12 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SCREENSHOTS_DIR = join(__dirname, '..', 'screenshots');
+
+// 블로그 모드 여부 확인
+const IS_BLOG_MODE = process.argv.includes('--blog');
+const SCREENSHOTS_DIR = IS_BLOG_MODE
+  ? '/Volumes/external/project/SidequestLab/projects/sidequestlab-homepage/public/images/blog'
+  : join(__dirname, '..', 'screenshots');
 
 // 환경 설정
 const BASE_URL = process.argv[2] || 'http://localhost:3000';
@@ -28,7 +34,9 @@ const IS_PROD = BASE_URL.includes('nbbang.click');
 
 console.log(`\n📸 엔빵 계산기 스크린샷 캡처 시작`);
 console.log(`   대상: ${BASE_URL}`);
-console.log(`   환경: ${IS_PROD ? '프로덕션' : '로컬'}\n`);
+console.log(`   환경: ${IS_PROD ? '프로덕션' : '로컬'}`);
+console.log(`   모드: ${IS_BLOG_MODE ? '블로그 (모바일 사이즈)' : '일반'}`);
+console.log(`   저장: ${SCREENSHOTS_DIR}\n`);
 
 // 샘플 데이터 - 블로그용 시나리오
 const SAMPLE_PARTICIPANTS = ['김철수', '이영희', '박민수'];
@@ -47,20 +55,28 @@ async function captureScreenshots() {
 
   try {
     // ============================================
-    // 1. 메인 화면 캡처 (데스크톱, 1280x720)
+    // 1. 메인 화면 캡처 (모바일 사이즈 375x667)
     // ============================================
     console.log('1️⃣  메인 화면 캡처 중...');
 
-    const desktopContext = await browser.newContext({
-      viewport: { width: 1280, height: 720 },
+    // 블로그 모드: 모바일 사이즈 (375x667) 통일
+    // 일반 모드: 데스크톱 사이즈 (1280x720)
+    const viewportConfig = IS_BLOG_MODE
+      ? { width: 375, height: 667, isMobile: true, hasTouch: true }
+      : { width: 1280, height: 720 };
+
+    const mainContext = await browser.newContext({
+      viewport: { width: viewportConfig.width, height: viewportConfig.height },
       deviceScaleFactor: 2, // Retina 품질
+      isMobile: viewportConfig.isMobile || false,
+      hasTouch: viewportConfig.hasTouch || false,
     });
-    const desktopPage = await desktopContext.newPage();
+    const mainPage = await mainContext.newPage();
 
-    await desktopPage.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await desktopPage.waitForTimeout(1000); // 애니메이션 완료 대기
+    await mainPage.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await mainPage.waitForTimeout(1000); // 애니메이션 완료 대기
 
-    await desktopPage.screenshot({
+    await mainPage.screenshot({
       path: join(SCREENSHOTS_DIR, 'nbbang-main.png'),
       fullPage: false,
     });
@@ -73,16 +89,16 @@ async function captureScreenshots() {
 
     // 참가자 추가 (data-testid 활용)
     for (const name of SAMPLE_PARTICIPANTS) {
-      const participantInput = await desktopPage.$('[data-testid="participant-name-input"]');
+      const participantInput = await mainPage.$('[data-testid="participant-name-input"]');
       if (participantInput) {
         await participantInput.fill(name);
-        await desktopPage.waitForTimeout(100);
+        await mainPage.waitForTimeout(100);
 
         // 추가 버튼 클릭
-        const addButton = await desktopPage.$('[data-testid="add-participant-button"]');
+        const addButton = await mainPage.$('[data-testid="add-participant-button"]');
         if (addButton) {
           await addButton.click();
-          await desktopPage.waitForTimeout(300);
+          await mainPage.waitForTimeout(300);
         }
       }
     }
@@ -93,37 +109,37 @@ async function captureScreenshots() {
       const expense = SAMPLE_EXPENSES[i];
 
       // 매 차수마다 차수 추가 버튼 클릭 (엔빵 UI: 참가자 추가 → 차수 추가 → 비용 추가)
-      const addRoundBtn = await desktopPage.$('[data-testid="add-round-button"]');
+      const addRoundBtn = await mainPage.$('[data-testid="add-round-button"]');
       if (addRoundBtn) {
         await addRoundBtn.click();
-        await desktopPage.waitForTimeout(500);
+        await mainPage.waitForTimeout(500);
         console.log(`   ✅ ${i + 1}차 추가 완료`);
       }
 
       // 비용 추가 버튼 클릭 (해당 차수의 버튼)
-      const addExpenseButtons = await desktopPage.$$('[data-testid^="add-expense-button-"]');
+      const addExpenseButtons = await mainPage.$$('[data-testid^="add-expense-button-"]');
       const addExpenseBtn = addExpenseButtons[i];
       if (addExpenseBtn) {
         await addExpenseBtn.click();
-        await desktopPage.waitForTimeout(300);
+        await mainPage.waitForTimeout(300);
 
         // 항목명 입력
-        const nameInput = await desktopPage.$('[data-testid="expense-name-input"]');
+        const nameInput = await mainPage.$('[data-testid="expense-name-input"]');
         if (nameInput) {
           await nameInput.fill(expense.name);
         }
 
         // 금액 입력
-        const costInput = await desktopPage.$('[data-testid="expense-cost-input"]');
+        const costInput = await mainPage.$('[data-testid="expense-cost-input"]');
         if (costInput) {
           await costInput.fill(expense.amount);
         }
 
         // 결제자 선택 (이름으로 매칭)
-        const payerSelect = await desktopPage.$('[data-testid="expense-payer-select"]');
+        const payerSelect = await mainPage.$('[data-testid="expense-payer-select"]');
         if (payerSelect) {
           // select 옵션에서 이름이 포함된 옵션 선택
-          const options = await desktopPage.$$('[data-testid="expense-payer-select"] option');
+          const options = await mainPage.$$('[data-testid="expense-payer-select"] option');
           for (const option of options) {
             const text = await option.textContent();
             if (text && text.includes(expense.payer)) {
@@ -137,33 +153,33 @@ async function captureScreenshots() {
         }
 
         // 저장 버튼 클릭
-        const saveBtn = await desktopPage.$('[data-testid="expense-save-button"]');
+        const saveBtn = await mainPage.$('[data-testid="expense-save-button"]');
         if (saveBtn) {
           await saveBtn.click();
-          await desktopPage.waitForTimeout(300);
+          await mainPage.waitForTimeout(300);
         }
       }
     }
     console.log(`   ✅ 비용 항목 ${SAMPLE_EXPENSES.length}개 추가 완료`);
 
     // 정산 결과가 표시될 때까지 대기
-    await desktopPage.waitForTimeout(1000);
+    await mainPage.waitForTimeout(1000);
 
     // 정산 결과 영역으로 스크롤
-    await desktopPage.evaluate(() => {
+    await mainPage.evaluate(() => {
       const settlementCard = document.querySelector('[data-testid="settlement-card"]');
       if (settlementCard) {
         settlementCard.scrollIntoView({ behavior: 'instant', block: 'center' });
       }
     });
 
-    await desktopPage.screenshot({
+    await mainPage.screenshot({
       path: join(SCREENSHOTS_DIR, 'nbbang-result.png'),
       fullPage: false,
     });
     console.log('   ✅ nbbang-result.png 저장 완료');
 
-    await desktopContext.close();
+    await mainContext.close();
 
     // ============================================
     // 3. 모바일 뷰 캡처 (iPhone SE, 375x667)

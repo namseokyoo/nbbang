@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "screenshot": "node scripts/capture-screenshots.mjs",
-    "screenshot:prod": "node scripts/capture-screenshots.mjs https://nbbang.click"
+    "screenshot:prod": "node scripts/capture-screenshots.mjs https://nbbang.click",
+    "screenshot:blog": "node scripts/capture-screenshots.mjs https://nbbang.click --blog"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.5",
