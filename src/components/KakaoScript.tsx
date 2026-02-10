@@ -22,7 +22,6 @@ export default function KakaoScript() {
       onLoad={() => {
         if (typeof window !== "undefined" && window.Kakao && !window.Kakao.isInitialized()) {
           window.Kakao.init(KAKAO_APP_KEY);
-          console.log("[Kakao] SDK initialized");
         }
       }}
     />

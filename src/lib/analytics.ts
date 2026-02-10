@@ -102,13 +102,8 @@ export const trackShareWeb = () => {
 /**
  * 에러 발생 이벤트
  */
-export const trackError = (errorType: string, errorMessage?: string) => {
+export const trackError = (errorType: string, _errorMessage?: string) => {
   trackEvent("error_occurrence", "error", errorType);
-
-  // 콘솔에도 로깅 (디버깅용)
-  if (process.env.NODE_ENV === "development") {
-    console.error(`[Analytics Error] ${errorType}: ${errorMessage}`);
-  }
 };
 
 /**

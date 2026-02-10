@@ -59,12 +59,11 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
       setTimeout(() => {
         setIsCopied(false);
       }, 2000);
-    } catch (error) {
-      console.error('클립보드 복사 실패:', error);
+    } catch {
       // 폴백: 수동 선택
       if (inputRef.current) {
         inputRef.current.select();
-        alert('Ctrl+C (또는 Cmd+C)를 눌러 복사해주세요.');
+        alert('링크 복사에 실패했습니다. 직접 복사해주세요.');
       }
     }
   };
@@ -83,7 +82,7 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
     } catch (error) {
       // 사용자가 공유를 취소한 경우는 에러로 처리하지 않음
       if ((error as Error).name !== 'AbortError') {
-        console.error('공유 실패:', error);
+        alert('공유에 실패했습니다.');
       }
     }
   };
@@ -102,8 +101,7 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
           alert('카카오톡 공유를 사용할 수 없습니다. 링크를 복사하여 공유해주세요.');
         }
       }
-    } catch (error) {
-      console.error('카카오톡 공유 실패:', error);
+    } catch {
       alert('카카오톡 공유 중 오류가 발생했습니다. 링크를 복사하여 공유해주세요.');
     } finally {
       setIsKakaoSharing(false);

@@ -32,7 +32,6 @@ export const initKakao = (): boolean => {
 
   // 앱 키가 없으면 초기화하지 않음
   if (!KAKAO_APP_KEY) {
-    console.log('[Kakao] 앱 키가 설정되지 않았습니다. 카카오 공유 기능이 비활성화됩니다.');
     return false;
   }
 
@@ -43,10 +42,8 @@ export const initKakao = (): boolean => {
 
   try {
     window.Kakao?.init(KAKAO_APP_KEY);
-    console.log('[Kakao] SDK 초기화 완료');
     return true;
-  } catch (error) {
-    console.error('[Kakao] SDK 초기화 실패:', error);
+  } catch {
     return false;
   }
 };
@@ -70,7 +67,6 @@ export const shareToKakao = async (options: KakaoShareOptions): Promise<boolean>
   if (!isKakaoInitialized()) {
     const initialized = initKakao();
     if (!initialized) {
-      console.warn('[Kakao] SDK가 초기화되지 않아 공유할 수 없습니다.');
       return false;
     }
   }
@@ -98,8 +94,7 @@ export const shareToKakao = async (options: KakaoShareOptions): Promise<boolean>
       ],
     });
     return true;
-  } catch (error) {
-    console.error('[Kakao] 공유 실패:', error);
+  } catch {
     return false;
   }
 };

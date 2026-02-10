@@ -176,8 +176,7 @@ export const useStore = create<AppState>()(
           });
 
           return true;
-        } catch (e) {
-          console.error('Failed to import state:', e);
+        } catch {
           return false;
         }
       },
