@@ -15,7 +15,6 @@ export default function Home() {
 
   useEffect(() => {
     // Client-side initialization - required for hydration safety
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
 
     // URL 파라미터에서 상태 가져오기
@@ -25,6 +24,11 @@ export default function Home() {
       const success = importState(data);
       if (success) {
         // URL 정리 (히스토리 교체)
+        window.history.replaceState({}, '', window.location.pathname);
+      } else {
+        // 데이터 임포트 실패 시 사용자 피드백
+        alert('공유된 정산 데이터를 불러오는데 실패했습니다. 링크가 손상되었을 수 있습니다.');
+        // URL 정리 (잘못된 파라미터 제거)
         window.history.replaceState({}, '', window.location.pathname);
       }
     }

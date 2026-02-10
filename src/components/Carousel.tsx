@@ -8,7 +8,7 @@ import RoundCard from './RoundCard';
 import SettlementCard from './SettlementCard';
 
 export default function Carousel() {
-  const { rounds, participants } = useStore();
+  const { rounds } = useStore();
   const [prevRoundsLength, setPrevRoundsLength] = useState(rounds.length);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
@@ -37,7 +37,6 @@ export default function Carousel() {
   useEffect(() => {
     if (!emblaApi) return;
     // Initial sync with carousel state - required for external library integration
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(emblaApi.selectedScrollSnap());
 
     const handleSelect = () => {
@@ -60,7 +59,6 @@ export default function Carousel() {
         emblaApi.scrollTo(newIndex);
       }, 100);
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrevRoundsLength(rounds.length);
   }, [rounds.length, prevRoundsLength, emblaApi]);
 
