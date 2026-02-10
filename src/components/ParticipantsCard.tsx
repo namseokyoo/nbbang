@@ -32,8 +32,10 @@ export default function ParticipantsCard() {
       <h2 className="text-xl font-bold mb-4 text-center">참가자</h2>
 
       {/* 참가자 입력 */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4" role="form" aria-label="참가자 추가">
+        <label htmlFor="participant-name-input" className="sr-only">참가자 이름</label>
         <input
+          id="participant-name-input"
           type="text"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
@@ -41,12 +43,14 @@ export default function ParticipantsCard() {
           placeholder="이름을 입력하세요"
           className="flex-1"
           maxLength={20}
+          aria-label="참가자 이름"
           data-testid="participant-name-input"
         />
         <button
           onClick={handleAddParticipant}
           disabled={!newName.trim()}
           className="btn btn-primary px-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="참가자 추가"
           data-testid="add-participant-button"
         >
           추가
@@ -86,6 +90,7 @@ export default function ParticipantsCard() {
                       onClick={() => setManager(participant.id)}
                       className="text-sm text-blue-500 hover:text-blue-700 px-2 py-1"
                       title="총무로 지정"
+                      aria-label={`${participant.name}을(를) 총무로 지정`}
                       data-testid={`set-manager-button-${participant.id}`}
                     >
                       총무 지정
@@ -95,6 +100,7 @@ export default function ParticipantsCard() {
                     onClick={() => removeParticipant(participant.id)}
                     className="text-gray-400 hover:text-red-500 transition-colors p-1"
                     title="삭제"
+                    aria-label={`${participant.name} 삭제`}
                     data-testid={`remove-participant-button-${participant.id}`}
                   >
                     <svg

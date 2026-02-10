@@ -167,6 +167,8 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
               readOnly
               className="flex-1 px-3 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               onClick={(e) => (e.target as HTMLInputElement).select()}
+              aria-label="공유 URL"
+              aria-readonly="true"
             />
             <button
               onClick={handleCopyLink}
@@ -175,6 +177,7 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
                   ? 'bg-green-500 text-white'
                   : 'bg-blue-500 text-white hover:bg-blue-600'
               }`}
+              aria-label={isCopied ? '링크가 복사되었습니다' : '공유 링크 복사'}
             >
               {isCopied ? (
                 <span className="flex items-center gap-1">
@@ -216,6 +219,7 @@ export default function ShareModal({ isOpen, onClose, shareUrl }: ShareModalProp
               onClick={handleKakaoShare}
               disabled={isKakaoSharing}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#FEE500] hover:bg-[#FDD800] text-[#3C1E1E] rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              aria-label="카카오톡으로 정산 결과 공유하기"
             >
               {/* 카카오톡 아이콘 */}
               <svg

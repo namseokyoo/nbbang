@@ -1,11 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useStore } from '@/lib/store';
 import Carousel from '@/components/Carousel';
-import ShareModal from '@/components/ShareModal';
-import KakaoAdFit from '@/components/KakaoAdFit';
 import ActionBar from '@/components/ActionBar';
+
+const ShareModal = dynamic(() => import('@/components/ShareModal'), {
+  ssr: false,
+});
+
+const KakaoAdFit = dynamic(() => import('@/components/KakaoAdFit'), {
+  ssr: false,
+});
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -75,6 +82,7 @@ export default function Home() {
                 onClick={handleShare}
                 className="btn btn-secondary text-sm py-1.5 px-3"
                 title="공유하기"
+                aria-label="정산 결과 공유하기"
                 data-testid="share-button"
               >
                 <svg
@@ -91,6 +99,7 @@ export default function Home() {
                 onClick={handleClearAll}
                 className="btn btn-danger text-sm py-1.5 px-3"
                 title="초기화"
+                aria-label="모든 데이터 초기화"
                 data-testid="clear-all-button"
               >
                 <svg
@@ -133,12 +142,13 @@ export default function Home() {
       </div>
 
       {/* 푸터 */}
-      <footer className="bg-white border-t py-2 text-center text-xs text-gray-400">
+      <footer className="bg-white border-t py-2 text-center text-xs text-gray-400" role="contentinfo">
         <a
           href="https://sidequestlab.com"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-blue-500"
+          aria-label="SidequestLab 홈페이지 (새 탭에서 열림)"
         >
           SidequestLab
         </a>

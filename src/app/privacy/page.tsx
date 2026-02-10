@@ -18,8 +18,8 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-dvh flex flex-col">
       {/* 헤더 */}
-      <header className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-        <Link href="/" className="text-lg font-bold text-blue-600">
+      <header className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-30" role="banner">
+        <Link href="/" className="text-lg font-bold text-blue-600" aria-label="엔빵 계산기 홈으로 이동">
           엔빵 계산기
         </Link>
       </header>
@@ -116,12 +116,13 @@ export default function PrivacyPage() {
       </main>
 
       {/* 푸터 */}
-      <footer className="bg-white border-t py-2 text-center text-xs text-gray-400">
+      <footer className="bg-white border-t py-2 text-center text-xs text-gray-400" role="contentinfo">
         <a
           href="https://sidequestlab.com"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-blue-500"
+          aria-label="SidequestLab 홈페이지 (새 탭에서 열림)"
         >
           SidequestLab
         </a>

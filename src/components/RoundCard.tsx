@@ -136,6 +136,7 @@ export default function RoundCard({ round }: RoundCardProps) {
             onClick={() => removeRound(round.id)}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"
             title="라운드 삭제"
+            aria-label={`${round.name} 삭제`}
             data-testid={`remove-round-button-${round.id}`}
           >
             <svg
@@ -208,6 +209,7 @@ export default function RoundCard({ round }: RoundCardProps) {
                         onClick={() => handleStartEditItem(item)}
                         className="text-gray-400 hover:text-blue-500 transition-colors p-1"
                         title="수정"
+                        aria-label={`${item.name} 항목 수정`}
                         data-testid={`edit-expense-button-${item.id}`}
                       >
                         <svg
@@ -223,6 +225,7 @@ export default function RoundCard({ round }: RoundCardProps) {
                         onClick={() => removeItem(round.id, item.id)}
                         className="text-gray-400 hover:text-red-500 transition-colors p-1"
                         title="삭제"
+                        aria-label={`${item.name} 항목 삭제`}
                         data-testid={`remove-expense-button-${item.id}`}
                       >
                         <svg
@@ -269,6 +272,7 @@ export default function RoundCard({ round }: RoundCardProps) {
         <button
           onClick={handleStartAddItem}
           className="btn btn-primary w-full"
+          aria-label={`${round.name}에 비용 항목 추가`}
           data-testid={`add-expense-button-${round.id}`}
         >
           + 항목 추가
@@ -311,18 +315,23 @@ function ItemForm({
   return (
     <div className="space-y-3">
       {/* 항목명 */}
+      <label htmlFor="expense-name" className="sr-only">항목명</label>
       <input
+        id="expense-name"
         type="text"
         value={formData.name}
         onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
         placeholder="항목명 (예: 삼겹살)"
         className="w-full"
         maxLength={50}
+        aria-label="항목명"
         data-testid="expense-name-input"
       />
 
       {/* 금액 */}
+      <label htmlFor="expense-cost" className="sr-only">금액</label>
       <input
+        id="expense-cost"
         type="number"
         value={formData.cost}
         onChange={(e) => setFormData((prev) => ({ ...prev, cost: e.target.value }))}
@@ -330,16 +339,19 @@ function ItemForm({
         className="w-full"
         min="0"
         step="100"
+        aria-label="금액"
         data-testid="expense-cost-input"
       />
 
       {/* 결제자 선택 */}
       <div>
-        <label className="text-sm text-gray-600 mb-1 block">결제자</label>
+        <label htmlFor="expense-payer" className="text-sm text-gray-600 mb-1 block">결제자</label>
         <select
+          id="expense-payer"
           value={formData.paidBy}
           onChange={(e) => setFormData((prev) => ({ ...prev, paidBy: e.target.value }))}
           className="w-full p-2 border border-gray-200 rounded-lg"
+          aria-label="결제자 선택"
           data-testid="expense-payer-select"
         >
           <option value="">선택해주세요</option>
@@ -372,7 +384,7 @@ function ItemForm({
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="참여자 선택">
           {participants.map((p) => (
             <button
               key={p.id}
@@ -383,6 +395,8 @@ function ItemForm({
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
               }`}
+              aria-pressed={formData.participants.includes(p.id)}
+              aria-label={`${p.name} ${formData.participants.includes(p.id) ? '선택됨' : '선택 안됨'}`}
             >
               {p.name}
             </button>

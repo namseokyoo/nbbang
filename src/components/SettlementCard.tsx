@@ -173,12 +173,14 @@ export default function SettlementCard() {
         <section data-testid="transfer-guide-section">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-gray-700">송금 안내</h3>
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <label htmlFor="optimize-toggle" className="flex items-center gap-2 text-sm cursor-pointer">
               <input
+                id="optimize-toggle"
                 type="checkbox"
                 checked={isOptimized}
                 onChange={(e) => setIsOptimized(e.target.checked)}
                 className="rounded"
+                aria-label="송금 최적화 단순화"
               />
               <span>단순화</span>
             </label>

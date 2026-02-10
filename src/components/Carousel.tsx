@@ -1,11 +1,24 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useStore } from '@/lib/store';
 import ParticipantsCard from './ParticipantsCard';
 import RoundCard from './RoundCard';
-import SettlementCard from './SettlementCard';
+
+const SettlementCard = dynamic(() => import('./SettlementCard'), {
+  ssr: false,
+  loading: () => (
+    <div className="card p-6 h-full flex flex-col items-center justify-center">
+      <div className="animate-pulse space-y-4 w-full">
+        <div className="h-6 bg-gray-200 rounded w-1/3 mx-auto" />
+        <div className="h-4 bg-gray-200 rounded w-full" />
+        <div className="h-4 bg-gray-200 rounded w-2/3" />
+      </div>
+    </div>
+  ),
+});
 
 export default function Carousel() {
   const { rounds } = useStore();
