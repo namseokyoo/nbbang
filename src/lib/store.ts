@@ -1,12 +1,59 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
 import type { AppState, Participant, Round, ExpenseItem, SerializableState } from '@/types';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
+import * as Sentry from '@sentry/nextjs';
 
 // 간단한 ID 생성 함수
 const generateId = () => Math.random().toString(36).substring(2, 9);
+
+// localStorage wrapper with error handling
+const createSafeStorage = (): StateStorage => {
+  return {
+    getItem: (name: string): string | null => {
+      try {
+        return localStorage.getItem(name);
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Failed to get item from localStorage:', error);
+        }
+        Sentry.captureException(error, {
+          tags: { operation: 'localStorage.getItem' },
+          extra: { key: name },
+        });
+        return null;
+      }
+    },
+    setItem: (name: string, value: string): void => {
+      try {
+        localStorage.setItem(name, value);
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Failed to set item to localStorage:', error);
+        }
+        Sentry.captureException(error, {
+          tags: { operation: 'localStorage.setItem' },
+          extra: { key: name },
+        });
+      }
+    },
+    removeItem: (name: string): void => {
+      try {
+        localStorage.removeItem(name);
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Failed to remove item from localStorage:', error);
+        }
+        Sentry.captureException(error, {
+          tags: { operation: 'localStorage.removeItem' },
+          extra: { key: name },
+        });
+      }
+    },
+  };
+};
 
 export const useStore = create<AppState>()(
   persist(
@@ -183,6 +230,18 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'nbbang-storage',
+      storage: createJSONStorage(() => createSafeStorage()),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Failed to rehydrate state from localStorage:', error);
+          }
+          Sentry.captureException(error, {
+            tags: { operation: 'zustand.rehydrate' },
+            extra: { storeName: 'nbbang-storage' },
+          });
+        }
+      },
     }
   )
 );
