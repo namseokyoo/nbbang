@@ -6,13 +6,15 @@ import { useStore } from '@/lib/store';
 import Carousel from '@/components/Carousel';
 import ActionBar from '@/components/ActionBar';
 
-const ShareModal = dynamic(() => import('@/components/ShareModal'), {
-  ssr: false,
-});
+const ShareModal = dynamic(
+  () => import('@/components/ShareModal').catch(() => () => null),
+  { ssr: false }
+);
 
-const KakaoAdFit = dynamic(() => import('@/components/KakaoAdFit'), {
-  ssr: false,
-});
+const KakaoAdFit = dynamic(
+  () => import('@/components/KakaoAdFit').catch(() => ({ default: () => <div style={{ minHeight: 100 }} /> })),
+  { ssr: false, loading: () => <div style={{ minHeight: 100 }} /> }
+);
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);

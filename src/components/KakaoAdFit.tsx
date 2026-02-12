@@ -27,24 +27,15 @@ export default function KakaoAdFit({
   className = '',
 }: KakaoAdFitProps) {
   useEffect(() => {
-    // 스크립트가 이미 로드되었는지 확인
-    const existingScript = document.querySelector(
-      'script[src*="t1.daumcdn.net/kas/static/ba.min.js"]'
-    );
-
-    if (!existingScript) {
-      // 스크립트 로드
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = '//t1.daumcdn.net/kas/static/ba.min.js';
-      script.async = true;
-      document.body.appendChild(script);
-    } else {
-      // 이미 스크립트가 있으면 광고 다시 렌더링
+    // layout.tsx의 KakaoAdFitScript가 ba.min.js를 로드하므로
+    // 여기서는 스크립트 로드 없이 init()만 호출
+    try {
       const win = window as Window & { kakaoAdFit?: { init: () => void } };
       if (win.kakaoAdFit) {
         win.kakaoAdFit.init();
       }
+    } catch (error) {
+      console.warn('KakaoAdFit init failed:', error);
     }
   }, []);
 
