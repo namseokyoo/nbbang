@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface KakaoAdFitProps {
   /** 광고 단위 ID (DAN-xxxxx 형식) */
@@ -15,10 +15,10 @@ interface KakaoAdFitProps {
 
 /**
  * 카카오 애드핏 광고 컴포넌트
- * - Next.js App Router 호환 (Client Component)
- * - 초기 HTML에 광고 마크업 포함 (SSR 친화적)
- * - 광고 스크립트 동적 로딩
- * - 스크립트 중복 로딩 방지
+ * - useRef로 wrapper div 참조, 그 안에 스크립트 추가 (DOM 위치 보장)
+ * - ba.min.js는 로드 시 DOM의 ins.kakao_ad_area 태그를 자동 스캔
+ * - ins 태그가 먼저 렌더된 후 스크립트를 추가하여 정상 동작 보장
+ * - 언마운트 시 window.adfit.destroy()로 정리
  */
 export default function KakaoAdFit({
   adUnitId,
@@ -26,47 +26,37 @@ export default function KakaoAdFit({
   height = 100,
   className = '',
 }: KakaoAdFitProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    // layout.tsx의 KakaoAdFitScript가 ba.min.js를 afterInteractive로 로드하므로
-    // 여기서는 스크립트 로드 없이 init()만 호출
-    // 단, 스크립트가 아직 로드되지 않았을 수 있으므로 재시도 로직 포함
-    const tryInit = () => {
+    if (!containerRef.current) return;
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = '//t1.daumcdn.net/kas/static/ba.min.js';
+    script.async = true;
+    script.charset = 'utf-8';
+    containerRef.current.appendChild(script);
+
+    return () => {
       try {
-        const win = window as Window & { kakaoAdFit?: { init: () => void } };
-        if (win.kakaoAdFit) {
-          win.kakaoAdFit.init();
-          return true;
+        const win = window as Window & { adfit?: { destroy: (id: string) => void } };
+        if (win.adfit) {
+          win.adfit.destroy(adUnitId);
         }
-        return false;
-      } catch (error) {
-        console.warn('KakaoAdFit init failed:', error);
-        return true; // 에러 시에도 재시도 중지
+      } catch {
+        // ignore cleanup errors
       }
     };
-
-    // 즉시 시도 (스크립트가 이미 로드된 경우)
-    if (tryInit()) return;
-
-    // 스크립트 로드 대기 (최대 10초, 500ms 간격)
-    let attempts = 0;
-    const maxAttempts = 20;
-    const interval = setInterval(() => {
-      attempts++;
-      if (tryInit() || attempts >= maxAttempts) {
-        clearInterval(interval);
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
+  }, [adUnitId]);
 
   return (
     <div
+      ref={containerRef}
       className={`kakao-adfit-container flex justify-center items-center ${className}`}
       style={{ minHeight: height }}
       aria-label="광고"
     >
-      {/* 초기 HTML에 광고 마크업 포함 (SSR 친화적) */}
       <ins
         className="kakao_ad_area"
         style={{ display: 'none' }}
