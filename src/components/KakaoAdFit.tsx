@@ -27,16 +27,37 @@ export default function KakaoAdFit({
   className = '',
 }: KakaoAdFitProps) {
   useEffect(() => {
-    // layout.tsx의 KakaoAdFitScript가 ba.min.js를 로드하므로
+    // layout.tsx의 KakaoAdFitScript가 ba.min.js를 afterInteractive로 로드하므로
     // 여기서는 스크립트 로드 없이 init()만 호출
-    try {
-      const win = window as Window & { kakaoAdFit?: { init: () => void } };
-      if (win.kakaoAdFit) {
-        win.kakaoAdFit.init();
+    // 단, 스크립트가 아직 로드되지 않았을 수 있으므로 재시도 로직 포함
+    const tryInit = () => {
+      try {
+        const win = window as Window & { kakaoAdFit?: { init: () => void } };
+        if (win.kakaoAdFit) {
+          win.kakaoAdFit.init();
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.warn('KakaoAdFit init failed:', error);
+        return true; // 에러 시에도 재시도 중지
       }
-    } catch (error) {
-      console.warn('KakaoAdFit init failed:', error);
-    }
+    };
+
+    // 즉시 시도 (스크립트가 이미 로드된 경우)
+    if (tryInit()) return;
+
+    // 스크립트 로드 대기 (최대 10초, 500ms 간격)
+    let attempts = 0;
+    const maxAttempts = 20;
+    const interval = setInterval(() => {
+      attempts++;
+      if (tryInit() || attempts >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
