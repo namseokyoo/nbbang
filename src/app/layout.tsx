@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 import KakaoScript from "@/components/KakaoScript";
 import "./globals.css";
 
@@ -107,6 +108,7 @@ export default function RootLayout({
         {children}
         <GoogleAnalytics gaId={GA_ID} />
         <KakaoScript />
+        <Analytics />
       </body>
     </html>
   );
